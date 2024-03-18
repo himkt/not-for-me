@@ -1,0 +1,13 @@
+{
+  "manifest_version": 3,
+  "name": "Not For You",
+  "description": "Remove For You tab from X",
+  "version": "1.0",
+  "content_scripts": [
+    {
+        "matches": ["https://twitter.com/*"],
+        "js": ["main.js"],
+        "run_at": "document_end"
+    }
+  ]
+}
