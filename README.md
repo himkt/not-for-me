@@ -1,6 +1,6 @@
-# Not For Me
+# Not For me
 
-Chrome extention to remove `For You` tab from X.
+Chrome extention to remove `For you` tab from X.
 
 ### Todo
 
