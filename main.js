@@ -1,7 +1,11 @@
+const FORYOU    = 'for you';
+const FOLLOWING = 'following';
+const AD        = 'ad';
+
 const removeForYouTab = (tab) => {
   if (!tab) return;
   const forYouTab = Array.from(tab.childNodes).find(
-    (node) => node.textContent.trim().toLowerCase() === 'for you'
+    (node) => node.textContent.trim().toLowerCase() === FORYOU
   );
   if (forYouTab) {
     tab.removeChild(forYouTab);
@@ -14,7 +18,7 @@ const removeWhatsHappeningSection = () => {
     if (whatsHappeningSection) {
       whatsHappeningSection.remove();
     } else {
-      requestAnimationFrame(waitForElement); // Retry until the element is available
+      requestAnimationFrame(waitForElement);
     }
   };
   waitForElement();
@@ -23,13 +27,29 @@ const removeWhatsHappeningSection = () => {
 const clickFollowingTab = () => {
   const waitForElement = () => {
     const followingTab = Array.from(document.querySelectorAll('a[role="tab"]')).find(
-      (tab) => tab.textContent.trim().toLowerCase() === 'following'
+      (tab) => tab.textContent.trim().toLowerCase() === FOLLOWING
     );
     if (followingTab) {
       followingTab.click();
     } else {
-      requestAnimationFrame(waitForElement); // Retry until the element is available
+      requestAnimationFrame(waitForElement);
     }
+  };
+  waitForElement();
+};
+
+const removeAdElements = () => {
+  const waitForElement = () => {
+    const adElements = Array.from(document.querySelectorAll('span')).filter(
+      (span) => span.textContent.trim().toLowerCase() === AD
+    );
+    adElements.forEach((adSpan) => {
+      const adContainer = adSpan.closest('[data-testid="cellInnerDiv"]');
+      if (adContainer && adContainer.style.display != 'none') {
+        adContainer.style.display = 'none';
+      }
+    });
+    requestAnimationFrame(waitForElement);
   };
   waitForElement();
 };
@@ -41,6 +61,7 @@ const observeMutations = () => {
     mutationTimeout = setTimeout(() => {
       const tablists = document.querySelectorAll('[role=tablist]');
       if (tablists.length < 2) return;
+
       const targetTab = tablists[0];
       if (targetTab.childNodes.length < 2) return;
 
@@ -56,6 +77,7 @@ const main = () => {
   clickFollowingTab();
   observeMutations();
   removeWhatsHappeningSection();
+  removeAdElements();
 };
 
 main();
