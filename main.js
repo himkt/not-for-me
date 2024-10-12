@@ -1,23 +1,61 @@
-const main = (tab) => {
-  const element = tab.childNodes[0];
-  tab.removeChild(element);
-}
+const removeForYouTab = (tab) => {
+  if (!tab) return;
+  const forYouTab = Array.from(tab.childNodes).find(
+    (node) => node.textContent.trim().toLowerCase() === 'for you'
+  );
+  if (forYouTab) {
+    tab.removeChild(forYouTab);
+  }
+};
 
-const wait = () => {
-  const observer = new MutationObserver((mutationList, observer) => {
-    let tablist = document.querySelectorAll("[role=tablist]");
-    if (!tablist) return;
-    if (tablist.length != 2) return;
+const removeWhatsHappeningSection = () => {
+  const waitForElement = () => {
+    const whatsHappeningSection = document.querySelector('[aria-label="Timeline: Trending now"]');
+    if (whatsHappeningSection) {
+      whatsHappeningSection.remove();
+    } else {
+      requestAnimationFrame(waitForElement); // Retry until the element is available
+    }
+  };
+  waitForElement();
+};
 
-    let target_tab = tablist[0];
-    if (target_tab.childNodes.length < 2) return;
+const clickFollowingTab = () => {
+  const waitForElement = () => {
+    const followingTab = Array.from(document.querySelectorAll('a[role="tab"]')).find(
+      (tab) => tab.textContent.trim().toLowerCase() === 'following'
+    );
+    if (followingTab) {
+      followingTab.click();
+    } else {
+      requestAnimationFrame(waitForElement); // Retry until the element is available
+    }
+  };
+  waitForElement();
+};
 
-    main(target_tab);
-    observer.disconnect();
+const observeMutations = () => {
+  let mutationTimeout;
+  const observer = new MutationObserver(() => {
+    if (mutationTimeout) clearTimeout(mutationTimeout);
+    mutationTimeout = setTimeout(() => {
+      const tablists = document.querySelectorAll('[role=tablist]');
+      if (tablists.length < 2) return;
+      const targetTab = tablists[0];
+      if (targetTab.childNodes.length < 2) return;
+
+      removeForYouTab(targetTab);
+    }, 100);
   });
 
-  const config = { childList: true };
+  const config = { childList: true, subtree: true };
   observer.observe(document.body, config);
 };
 
-wait();
+const main = () => {
+  clickFollowingTab();
+  observeMutations();
+  removeWhatsHappeningSection();
+};
+
+main();
