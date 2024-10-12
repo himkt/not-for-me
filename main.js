@@ -1,6 +1,23 @@
-const FORYOU    = 'for you';
+const FORYOU = 'for you';
 const FOLLOWING = 'following';
-const AD        = 'ad';
+const AD = 'ad';
+const TRENDS_FOR_YOU = 'trends for you';
+
+const removeElementByTextContent = (selector, text, closestSelector) => {
+  const waitForElement = () => {
+    const elements = Array.from(document.querySelectorAll(selector)).filter(
+      (el) => el.textContent.trim().toLowerCase() === text
+    );
+    elements.forEach((element) => {
+      const container = element.closest(closestSelector);
+      if (container && container.style.display != 'none') {
+        container.style.display = 'none';
+      }
+    });
+    requestAnimationFrame(waitForElement);
+  };
+  waitForElement();
+};
 
 const removeForYouTab = (tab) => {
   if (!tab) return;
@@ -38,22 +55,6 @@ const clickFollowingTab = () => {
   waitForElement();
 };
 
-const removeAdElements = () => {
-  const waitForElement = () => {
-    const adElements = Array.from(document.querySelectorAll('span')).filter(
-      (span) => span.textContent.trim().toLowerCase() === AD
-    );
-    adElements.forEach((adSpan) => {
-      const adContainer = adSpan.closest('[data-testid="cellInnerDiv"]');
-      if (adContainer && adContainer.style.display != 'none') {
-        adContainer.style.display = 'none';
-      }
-    });
-    requestAnimationFrame(waitForElement);
-  };
-  waitForElement();
-};
-
 const observeMutations = () => {
   let mutationTimeout;
   const observer = new MutationObserver(() => {
@@ -77,7 +78,8 @@ const main = () => {
   clickFollowingTab();
   observeMutations();
   removeWhatsHappeningSection();
-  removeAdElements();
+  removeElementByTextContent('span', AD, '[data-testid="cellInnerDiv"]');
+  removeElementByTextContent('span', TRENDS_FOR_YOU, '[data-testid="cellInnerDiv"]');
 };
 
 main();
