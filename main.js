@@ -4,19 +4,15 @@ const AD = 'ad';
 const TRENDS_FOR_YOU = 'trends for you';
 
 const removeElementByTextContent = (selector, text, closestSelector) => {
-  const waitForElement = () => {
-    const elements = Array.from(document.querySelectorAll(selector)).filter(
-      (el) => el.textContent.trim().toLowerCase() === text
-    );
-    elements.forEach((element) => {
-      const container = element.closest(closestSelector);
-      if (container && container.style.display != 'none') {
-        container.style.display = 'none';
-      }
-    });
-    requestAnimationFrame(waitForElement);
-  };
-  waitForElement();
+  const elements = Array.from(document.querySelectorAll(selector)).filter(
+    (el) => el.textContent.trim().toLowerCase() === text
+  );
+  elements.forEach((element) => {
+    const container = element.closest(closestSelector);
+    if (container && container.style.display != 'none') {
+      container.style.display = 'none';
+    }
+  });
 };
 
 const removeForYouTab = (tab) => {
@@ -25,34 +21,26 @@ const removeForYouTab = (tab) => {
     (node) => node.textContent.trim().toLowerCase() === FORYOU
   );
   if (forYouTab) {
-    tab.removeChild(forYouTab);
+    forYouTab.style.display = 'none';
   }
 };
 
 const removeWhatsHappeningSection = () => {
-  const waitForElement = () => {
-    const whatsHappeningSection = document.querySelector('[aria-label="Timeline: Trending now"]');
-    if (whatsHappeningSection) {
-      whatsHappeningSection.remove();
-    } else {
-      requestAnimationFrame(waitForElement);
-    }
-  };
-  waitForElement();
+  const whatsHappeningSection = document.querySelector('[aria-label="Timeline: Trending now"]');
+  if (whatsHappeningSection) {
+    whatsHappeningSection.style.display = 'none';
+  }
 };
 
 const clickFollowingTab = () => {
-  const waitForElement = () => {
-    const followingTab = Array.from(document.querySelectorAll('a[role="tab"]')).find(
-      (tab) => tab.textContent.trim().toLowerCase() === FOLLOWING
-    );
-    if (followingTab) {
-      followingTab.click();
-    } else {
-      requestAnimationFrame(waitForElement);
-    }
-  };
-  waitForElement();
+  const followingTab = Array.from(document.querySelectorAll('a[role="tab"]')).find(
+    (tab) => tab.textContent.trim().toLowerCase() === FOLLOWING
+  );
+  if (followingTab) {
+    followingTab.click();
+  } else {
+    requestAnimationFrame(clickFollowingTab);
+  }
 };
 
 const observeMutations = () => {
@@ -67,6 +55,9 @@ const observeMutations = () => {
       if (targetTab.childNodes.length < 2) return;
 
       removeForYouTab(targetTab);
+      removeWhatsHappeningSection();
+      removeElementByTextContent('span', AD, '[data-testid="cellInnerDiv"]');
+      removeElementByTextContent('span', TRENDS_FOR_YOU, '[data-testid="cellInnerDiv"]');
     }, 100);
   });
 
@@ -77,9 +68,6 @@ const observeMutations = () => {
 const main = () => {
   clickFollowingTab();
   observeMutations();
-  removeWhatsHappeningSection();
-  removeElementByTextContent('span', AD, '[data-testid="cellInnerDiv"]');
-  removeElementByTextContent('span', TRENDS_FOR_YOU, '[data-testid="cellInnerDiv"]');
 };
 
 main();
