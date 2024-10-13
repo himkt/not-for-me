@@ -2,6 +2,7 @@
   "name": "not-for-me",
   "version": "0.0.1",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "build": "tsc && vite build"
   },
