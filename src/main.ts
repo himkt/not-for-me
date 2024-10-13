@@ -2,14 +2,14 @@ const FORYOU: string = 'for you';
 const FOLLOWING: string = 'following';
 const AD: string = 'ad';
 const TRENDS_FOR_YOU: string = 'trends for you';
-const WHATS_HAPPENING: string = 'timeline: trending now';
+const WHATS_HAPPENING: string = 'Timeline: Trending now';
 
-const removeElementByTextContent = (selector: string, text: string, closestSelector: string): void => {
-  const elements = Array.from(document.querySelectorAll<HTMLElement>(selector)).filter(
+const removeElementByTextContent = (text: string): void => {
+  const elements = Array.from(document.querySelectorAll<HTMLElement>('span')).filter(
     (el) => el.textContent?.trim().toLowerCase() === text
   );
   elements.forEach((element) => {
-    const container = element.closest<HTMLElement>(closestSelector);
+    const container = element.closest<HTMLElement>('[data-testid="cellInnerDiv"]');
     if (container && container.style.display != 'none') {
       container.style.display = 'none';
     }
@@ -45,21 +45,12 @@ const clickFollowingTab = (): void => {
 };
 
 const observeMutations = (): void => {
-  let mutationTimeout: number;
   const observer = new MutationObserver(() => {
-    if (mutationTimeout) clearTimeout(mutationTimeout);
-    mutationTimeout = window.setTimeout(() => {
-      const tablists = document.querySelectorAll<HTMLElement>('[role=tablist]');
-      if (tablists.length < 2) return;
-
-      const targetTab = tablists[0];
-      if (targetTab.childNodes.length < 2) return;
-
-      removeForYouTab(targetTab);
-      removeElementByAriaLabel('Timeline: Trending now');
-      removeElementByTextContent('span', AD, '[data-testid="cellInnerDiv"]');
-      removeElementByTextContent('span', TRENDS_FOR_YOU, '[data-testid="cellInnerDiv"]');
-    }, 100);
+    const tabList = document.querySelectorAll<HTMLElement>('[role=tablist]');
+    removeForYouTab(tabList[0]);
+    removeElementByAriaLabel(WHATS_HAPPENING);
+    removeElementByTextContent(AD);
+    removeElementByTextContent(TRENDS_FOR_YOU);
   });
 
   const config = { childList: true, subtree: true };
