@@ -1,0 +1,12 @@
+{
+  "name": "not-for-me",
+  "version": "0.0.1",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc && vite build"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3",
+    "vite": "^5.4.8"
+  }
+}
