@@ -2,6 +2,7 @@ const FORYOU = 'for you';
 const FOLLOWING = 'following';
 const AD = 'ad';
 const TRENDS_FOR_YOU = 'trends for you';
+const WHATS_HAPPENING = 'timeline: trending now';
 
 const removeElementByTextContent = (selector, text, closestSelector) => {
   const elements = Array.from(document.querySelectorAll(selector)).filter(
@@ -15,6 +16,13 @@ const removeElementByTextContent = (selector, text, closestSelector) => {
   });
 };
 
+const removeElementByAriaLabel = (ariaLabel) => {
+  const element = document.querySelector(`[aria-label="${ariaLabel}"]`);
+  if (element) {
+    element.style.display = 'none';
+  }
+};
+
 const removeForYouTab = (tab) => {
   if (!tab) return;
   const forYouTab = Array.from(tab.childNodes).find(
@@ -22,13 +30,6 @@ const removeForYouTab = (tab) => {
   );
   if (forYouTab) {
     forYouTab.style.display = 'none';
-  }
-};
-
-const removeWhatsHappeningSection = () => {
-  const whatsHappeningSection = document.querySelector('[aria-label="Timeline: Trending now"]');
-  if (whatsHappeningSection) {
-    whatsHappeningSection.style.display = 'none';
   }
 };
 
@@ -55,7 +56,7 @@ const observeMutations = () => {
       if (targetTab.childNodes.length < 2) return;
 
       removeForYouTab(targetTab);
-      removeWhatsHappeningSection();
+      removeElementByAriaLabel('Timeline: Trending now');
       removeElementByTextContent('span', AD, '[data-testid="cellInnerDiv"]');
       removeElementByTextContent('span', TRENDS_FOR_YOU, '[data-testid="cellInnerDiv"]');
     }, 100);
