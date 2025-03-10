@@ -1,10 +1,10 @@
-const FORYOU: string = 'for you';
-const FOLLOWING: string = 'following';
-const AD: string = 'ad';
-const TRENDS_FOR_YOU: string = 'trends for you';
-const WHATS_HAPPENING: string = 'Timeline: Trending now';
+export const FORYOU: string = 'for you';
+export const FOLLOWING: string = 'following';
+export const AD: string = 'ad';
+export const TRENDS_FOR_YOU: string = 'trends for you';
+export const WHATS_HAPPENING: string = 'Timeline: Trending now';
 
-const removeElementByTextContent = (text: string): void => {
+export const removeElementByTextContent = (text: string): void => {
   const elements = Array.from(document.querySelectorAll<HTMLElement>('span')).filter(
     (el) => el.textContent?.trim().toLowerCase() === text
   );
@@ -16,14 +16,14 @@ const removeElementByTextContent = (text: string): void => {
   });
 };
 
-const removeElementByAriaLabel = (ariaLabel: string): void => {
+export const removeElementByAriaLabel = (ariaLabel: string): void => {
   const element = document.querySelector<HTMLElement>(`[aria-label="${ariaLabel}"]`);
   if (element) {
     element.style.display = 'none';
   }
 };
 
-const removeForYouTab = (tab: HTMLElement | null): void => {
+export const removeForYouTab = (tab: HTMLElement | null): void => {
   if (!tab) return;
   const forYouTab = Array.from(tab.childNodes).find(
     (node) => (node as HTMLElement).textContent?.trim().toLowerCase() === FORYOU
@@ -33,7 +33,7 @@ const removeForYouTab = (tab: HTMLElement | null): void => {
   }
 };
 
-const clickFollowingTab = (): void => {
+export const clickFollowingTab = (): void => {
   const followingTab = Array.from(document.querySelectorAll<HTMLElement>('a[role="tab"]')).find(
     (tab) => tab.textContent?.trim().toLowerCase() === FOLLOWING
   );
@@ -44,7 +44,7 @@ const clickFollowingTab = (): void => {
   }
 };
 
-const observeMutations = (): void => {
+export const observeMutations = (): void => {
   const observer = new MutationObserver(() => {
     const tabList = document.querySelectorAll<HTMLElement>('[role=tablist]');
     removeForYouTab(tabList[0]);
@@ -57,7 +57,7 @@ const observeMutations = (): void => {
   observer.observe(document.body, config);
 };
 
-const main = (): void => {
+export const main = (): void => {
   clickFollowingTab();
   observeMutations();
 };
