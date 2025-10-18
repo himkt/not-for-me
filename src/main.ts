@@ -5,7 +5,7 @@ export const TRENDS_FOR_YOU: string = 'trends for you';
 export const WHATS_HAPPENING: string = 'Timeline: Trending now';
 
 export const removeElementByTextContent = (text: string): void => {
-  const elements = Array.from(document.querySelectorAll<HTMLElement>('span')).filter(
+  const elements = Array.from(document.querySelectorAll('span') as NodeListOf<HTMLElement>).filter(
     (el) => el.textContent?.trim().toLowerCase() === text
   );
   elements.forEach((element) => {
@@ -17,7 +17,7 @@ export const removeElementByTextContent = (text: string): void => {
 };
 
 export const removeElementByAriaLabel = (ariaLabel: string): void => {
-  const element = document.querySelector<HTMLElement>(`[aria-label="${ariaLabel}"]`);
+  const element = document.querySelector(`[aria-label="${ariaLabel}"]`) as HTMLElement | null;
   if (element) {
     element.style.display = 'none';
   }
@@ -34,7 +34,7 @@ export const removeForYouTab = (tab: HTMLElement | null): void => {
 };
 
 export const clickFollowingTab = (): void => {
-  const followingTab = Array.from(document.querySelectorAll<HTMLElement>('a[role="tab"]')).find(
+  const followingTab = Array.from(document.querySelectorAll('a[role="tab"]') as NodeListOf<HTMLAnchorElement>).find(
     (tab) => tab.textContent?.trim().toLowerCase() === FOLLOWING
   );
   if (followingTab) {
@@ -46,8 +46,8 @@ export const clickFollowingTab = (): void => {
 
 export const observeMutations = (): void => {
   const observer = new MutationObserver(() => {
-    const tabList = document.querySelectorAll<HTMLElement>('[role=tablist]');
-    removeForYouTab(tabList[0]);
+    const tabList = document.querySelectorAll('[role=tablist]') as NodeListOf<HTMLElement>;
+    removeForYouTab(tabList[0] ?? null);
     removeElementByAriaLabel(WHATS_HAPPENING);
     removeElementByTextContent(AD);
     removeElementByTextContent(TRENDS_FOR_YOU);
