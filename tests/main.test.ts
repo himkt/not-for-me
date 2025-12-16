@@ -108,19 +108,17 @@ describe('Not For Me Extension', () => {
     it('should hide the For You tab', () => {
       document.body.innerHTML = `
         <div role="tablist">
-          <div>For you</div>
-          <div>Following</div>
+          <div role="presentation"><a role="tab">For you</a></div>
+          <div role="presentation"><a role="tab">Following</a></div>
         </div>
       `;
 
       const tabList = document.querySelector<HTMLElement>('[role="tablist"]');
       removeForYouTab(tabList);
 
-      const forYouTab = Array.from(tabList!.childNodes).find(
-        (node) => (node as HTMLElement).textContent?.trim().toLowerCase() === FORYOU
-      ) as HTMLElement;
+      const forYouPresentation = tabList!.querySelectorAll<HTMLElement>('[role="presentation"]')[0];
 
-      expect(forYouTab.style.display).toBe('none');
+      expect(forYouPresentation.style.display).toBe('none');
     });
 
     it('should do nothing if tab is null', () => {
@@ -144,13 +142,16 @@ describe('Not For Me Extension', () => {
   });
 
   describe('clickFollowingTab', () => {
-    it('should click the Following tab if found', () => {
+    it('should click the Following tab when For You is selected', () => {
       document.body.innerHTML = `
-        <a role="tab">For you</a>
-        <a role="tab">Following</a>
+        <div role="tablist" data-testid="ScrollSnap-List">
+          <div role="presentation"><div role="tab" aria-selected="true"><span>For you</span></div></div>
+          <div role="presentation"><div role="tab" aria-selected="false"><span>Custom</span></div></div>
+          <div role="presentation"><div role="tab" aria-selected="false"><span>Following</span></div></div>
+        </div>
       `;
 
-      const followingTab = document.querySelectorAll<HTMLElement>('a[role="tab"]')[1];
+      const followingTab = document.querySelectorAll<HTMLElement>('[role="tab"]')[2];
       const clickSpy = vi.spyOn(followingTab, 'click' as any);
 
       clickFollowingTab();
@@ -158,17 +159,52 @@ describe('Not For Me Extension', () => {
       expect(clickSpy).toHaveBeenCalledTimes(1);
     });
 
-    it('should use requestAnimationFrame if Following tab is not found', () => {
+    it('should not override a custom selected tab', () => {
       document.body.innerHTML = `
-        <a role="tab">For you</a>
-        <a role="tab">Something else</a>
+        <div role="tablist" data-testid="ScrollSnap-List">
+          <div role="presentation"><div role="tab" aria-selected="false"><span>For you</span></div></div>
+          <div role="presentation"><div role="tab" aria-selected="true"><span>Custom</span></div></div>
+          <div role="presentation"><div role="tab" aria-selected="false"><span>Following</span></div></div>
+        </div>
       `;
 
-      const rafSpy = vi.spyOn(window, 'requestAnimationFrame');
+      const followingTab = document.querySelectorAll<HTMLElement>('[role="tab"]')[2];
+      const clickSpy = vi.spyOn(followingTab, 'click' as any);
 
       clickFollowingTab();
 
-      expect(rafSpy).toHaveBeenCalledTimes(1);
+      expect(clickSpy).not.toHaveBeenCalled();
+    });
+
+    it('should do nothing if Following tab is not found', () => {
+      document.body.innerHTML = `
+        <div role="tablist" data-testid="ScrollSnap-List">
+          <div role="presentation"><div role="tab" aria-selected="true"><span>For you</span></div></div>
+          <div role="presentation"><div role="tab" aria-selected="false"><span>Custom</span></div></div>
+        </div>
+      `;
+
+      const tabs = document.querySelectorAll<HTMLElement>('[role="tab"]');
+      const spies = Array.from(tabs).map((tab) => vi.spyOn(tab, 'click' as any));
+
+      expect(() => clickFollowingTab()).not.toThrow();
+      spies.forEach((spy) => expect(spy).not.toHaveBeenCalled());
+    });
+
+    it('should not click if Following tab is already selected', () => {
+      document.body.innerHTML = `
+        <div role="tablist" data-testid="ScrollSnap-List">
+          <div role="presentation"><div role="tab" aria-selected="false"><span>For you</span></div></div>
+          <div role="presentation"><div role="tab" aria-selected="true"><span>Following</span></div></div>
+        </div>
+      `;
+
+      const followingTab = document.querySelectorAll<HTMLElement>('[role="tab"]')[1];
+      const clickSpy = vi.spyOn(followingTab, 'click' as any);
+
+      clickFollowingTab();
+
+      expect(clickSpy).not.toHaveBeenCalled();
     });
   });
 

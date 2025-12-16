@@ -4,6 +4,36 @@ export const AD: string = 'ad';
 export const TRENDS_FOR_YOU: string = 'trends for you';
 export const WHATS_HAPPENING: string = 'Timeline: Trending now';
 
+const normalizeText = (text: string | null | undefined): string => text?.trim().toLowerCase() ?? '';
+
+const getHomeTabList = (): HTMLElement | null =>
+  ((document.querySelector('[data-testid="ScrollSnap-List"][role="tablist"]') as HTMLElement | null) ??
+    (document.querySelector('[role="tablist"]') as HTMLElement | null));
+
+const getTabs = (tabList: ParentNode): HTMLElement[] => Array.from(tabList.querySelectorAll('[role="tab"]')) as HTMLElement[];
+
+const findTabByText = (tabs: HTMLElement[], text: string): HTMLElement | null =>
+  tabs.find((tab) => normalizeText(tab.textContent) === text) ?? null;
+
+const getForYouTab = (tabList: ParentNode): HTMLElement | null => findTabByText(getTabs(tabList), FORYOU);
+const getFollowingTab = (tabList: ParentNode): HTMLElement | null => findTabByText(getTabs(tabList), FOLLOWING);
+
+const syncHomeTabs = (): void => {
+  const tabList = getHomeTabList();
+  if (!tabList) return;
+
+  const forYouTab = getForYouTab(tabList);
+  if (!forYouTab) return;
+
+  if (forYouTab.getAttribute('aria-selected') === 'true') {
+    const followingTab = getFollowingTab(tabList);
+    if (followingTab && followingTab.getAttribute('aria-selected') !== 'true') followingTab.click();
+    return;
+  }
+
+  removeForYouTab(tabList);
+};
+
 export const removeElementByTextContent = (text: string): void => {
   const elements = Array.from(document.querySelectorAll('span') as NodeListOf<HTMLElement>).filter(
     (el) => el.textContent?.trim().toLowerCase() === text
@@ -25,29 +55,30 @@ export const removeElementByAriaLabel = (ariaLabel: string): void => {
 
 export const removeForYouTab = (tab: HTMLElement | null): void => {
   if (!tab) return;
-  const forYouTab = Array.from(tab.childNodes).find(
-    (node) => (node as HTMLElement).textContent?.trim().toLowerCase() === FORYOU
-  ) as HTMLElement | undefined;
+  const forYouTab = getForYouTab(tab);
   if (forYouTab) {
-    forYouTab.style.display = 'none';
+    const presentationWrapper = forYouTab.closest('[role="presentation"]') as HTMLElement | null;
+    (presentationWrapper ?? forYouTab).style.display = 'none';
   }
 };
 
 export const clickFollowingTab = (): void => {
-  const followingTab = Array.from(document.querySelectorAll('a[role="tab"]') as NodeListOf<HTMLAnchorElement>).find(
-    (tab) => tab.textContent?.trim().toLowerCase() === FOLLOWING
-  );
-  if (followingTab) {
+  const tabList = getHomeTabList();
+  if (!tabList) return;
+
+  const forYouTab = getForYouTab(tabList);
+  const followingTab = getFollowingTab(tabList);
+  if (!forYouTab || !followingTab) return;
+
+  if (forYouTab.getAttribute('aria-selected') === 'true' && followingTab.getAttribute('aria-selected') !== 'true') {
     followingTab.click();
-  } else {
-    requestAnimationFrame(clickFollowingTab);
   }
 };
 
 export const observeMutations = (): void => {
   const observer = new MutationObserver(() => {
-    const tabList = document.querySelectorAll('[role=tablist]') as NodeListOf<HTMLElement>;
-    removeForYouTab(tabList[0] ?? null);
+    syncHomeTabs();
+
     removeElementByAriaLabel(WHATS_HAPPENING);
     removeElementByTextContent(AD);
     removeElementByTextContent(TRENDS_FOR_YOU);
@@ -58,7 +89,7 @@ export const observeMutations = (): void => {
 };
 
 export const main = (): void => {
-  clickFollowingTab();
+  syncHomeTabs();
   observeMutations();
 };
 
