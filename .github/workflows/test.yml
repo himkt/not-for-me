@@ -7,11 +7,8 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-node@v4
-      with:
-        node-version: '20.x'
-        cache: 'npm'
-    - run: npm ci
-    - run: npm run build
-    - run: npm test
+    - uses: actions/checkout@v6.0.2
+    - uses: oven-sh/setup-bun@v2.2.0
+    - run: bun install --frozen-lockfile
+    - run: bun run build
+    - run: bun run test
