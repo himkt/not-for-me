@@ -2,7 +2,7 @@
 
 [![Tests](https://github.com/himkt/not-for-me/actions/workflows/test.yml/badge.svg)](https://github.com/himkt/not-for-me/actions/workflows/test.yml)
 
-A Chrome extension that automatically removes the "For you" tab from X (formerly Twitter) and navigates to the "Following" tab. It also removes ads and trending sections for a cleaner browsing experience.
+A Chrome and Safari extension that automatically removes the "For you" tab from X (formerly Twitter) and navigates to the "Following" tab. It also removes ads and trending sections for a cleaner browsing experience.
 
 ## Features
 
@@ -37,6 +37,16 @@ A Chrome extension that automatically removes the "For you" tab from X (formerly
 4. Enable "Developer mode" by toggling the switch in the top right corner
 5. Click "Load unpacked" and select the `dist` directory from this project
 6. The extension is now installed and will automatically run when you visit X/Twitter
+
+### Safari (macOS / iOS)
+
+The Xcode project in `safari/` wraps the build output in `dist/` as a Safari Web Extension.
+
+1. Build the extension (step 2 above) so that `dist/` exists
+2. Open `safari/Not For Me/Not For Me.xcodeproj` in Xcode
+3. Select your team under "Signing & Capabilities" for every target
+4. Run the `Not For Me (macOS)` or `Not For Me (iOS)` scheme
+5. Enable "Not For Me" in Safari's extension settings and allow it on x.com
 
 ## Development
 
