@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "main": "index.js",
   "type": "module",
+  "packageManager": "pnpm@12.16.0",
   "scripts": {
     "build": "tsc && vite build",
     "dev": "vite build --watch",

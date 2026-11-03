@@ -30,8 +30,8 @@ A Chrome and Safari extension that automatically removes the "For you" tab from 
    ```
 2. Build the extension
    ```
-   npm install
-   npm run build
+   pnpm install
+   pnpm run build
    ```
 3. Open Chrome and navigate to `chrome://extensions/`
 4. Enable "Developer mode" by toggling the switch in the top right corner
@@ -40,7 +40,7 @@ A Chrome and Safari extension that automatically removes the "For you" tab from 
 
 ### Safari (macOS / iOS)
 
-The Xcode project in `safari/` wraps the build output in `dist/` as a Safari Web Extension. Each extension target runs `safari/build-web-extension.sh`, which builds `dist/` with `bun`, so `bun` must be installed (`mise install` provides it).
+The Xcode project in `safari/` wraps the build output in `dist/` as a Safari Web Extension. Each extension target runs `safari/build-web-extension.sh`, which builds `dist/` with `pnpm`, so `pnpm` must be installed.
 
 1. Open `safari/Not For Me/Not For Me.xcodeproj` in Xcode
 2. Select your team under "Signing & Capabilities" for every target
@@ -52,7 +52,7 @@ The Xcode project in `safari/` wraps the build output in `dist/` as a Safari Web
 ### Prerequisites
 
 - Node.js (v14 or later)
-- npm
+- pnpm (the version pinned in `packageManager` in `package.json`)
 
 ### Setup
 
@@ -64,17 +64,17 @@ The Xcode project in `safari/` wraps the build output in `dist/` as a Safari Web
 
 2. Install dependencies
    ```
-   npm install
+   pnpm install
    ```
 
 3. Build the extension
    ```
-   npm run build
+   pnpm run build
    ```
 
 4. For development with automatic rebuilding, use:
    ```
-   npm run dev
+   pnpm run dev
    ```
 
 ### Testing
@@ -82,7 +82,7 @@ The Xcode project in `safari/` wraps the build output in `dist/` as a Safari Web
 Run the test suite with:
 
 ```
-npm test
+pnpm test
 ```
 
 ## How It Works
