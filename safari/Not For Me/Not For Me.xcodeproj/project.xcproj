@@ -86,6 +86,13 @@
                 "Not For Me Extension (iOS)/resources",
                 "Not For Me Extension (macOS)/resources",
               ],
+            }, {
+              "path": "../../../dist/icons",
+              "type": "folder",
+              "target-membership": [
+                "Not For Me Extension (iOS)/resources",
+                "Not For Me Extension (macOS)/resources",
+              ],
             },
           ],
         }, {
