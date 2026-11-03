@@ -177,10 +177,12 @@ describe('Not For Me Extension', () => {
   describe('observeMutations', () => {
     it('should set up a MutationObserver on the document body', () => {
       const observeSpy = vi.fn();
-      window.MutationObserver = vi.fn().mockImplementation(() => ({
-        observe: observeSpy,
-        disconnect: vi.fn(),
-      }));
+      window.MutationObserver = vi.fn().mockImplementation(function () {
+        return {
+          observe: observeSpy,
+          disconnect: vi.fn(),
+        };
+      });
 
       observeMutations();
 
@@ -191,10 +193,12 @@ describe('Not For Me Extension', () => {
 
   describe('main', () => {
     it('should initialize the extension', () => {
-      window.MutationObserver = vi.fn().mockImplementation(() => ({
-        observe: vi.fn(),
-        disconnect: vi.fn(),
-      }));
+      window.MutationObserver = vi.fn().mockImplementation(function () {
+        return {
+          observe: vi.fn(),
+          disconnect: vi.fn(),
+        };
+      });
 
       vi.spyOn(window, 'requestAnimationFrame').mockImplementation(vi.fn());
 
