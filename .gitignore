@@ -33,3 +33,9 @@ yarn-error.log*
 *.sln
 *.sw?
 .DS_Store
+
+# Xcode
+xcuserdata/
+
+# CAFleet spawn prompts
+.prompts/

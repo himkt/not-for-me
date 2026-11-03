@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <title>Not For Me</title>
+  <desc>Three feed lines crossed by a coral slash on an opaque deep teal background.</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1024" y2="1024" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#183D43"/>
+      <stop offset="1" stop-color="#10282F"/>
+    </linearGradient>
+  </defs>
+  <path fill="url(#background)" d="M0 0h1024v1024H0z"/>
+  <g fill="none" stroke="#EAF3E9" stroke-linecap="round" stroke-width="88">
+    <path d="M280 320h464"/>
+    <path d="M280 512h464"/>
+    <path d="M280 704h464"/>
+  </g>
+  <path fill="none" stroke="url(#background)" stroke-linecap="round" stroke-width="184" d="m760 264-496 496"/>
+  <path fill="none" stroke="#FFA082" stroke-linecap="round" stroke-width="112" d="m760 264-496 496"/>
+</svg>
