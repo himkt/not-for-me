@@ -258,7 +258,6 @@
         "ENABLE_APP_SANDBOX": "YES",
         "ENABLE_HARDENED_RUNTIME": "YES",
         "ENABLE_OUTGOING_NETWORK_CONNECTIONS": "YES",
-        "ENABLE_USER_SELECTED_FILES": "readonly",
         "GENERATE_INFOPLIST_FILE": "YES",
         "INFOPLIST_FILE": "macOS (App)/Info.plist",
         "INFOPLIST_KEY_CFBundleDisplayName": "Not For Me",
@@ -293,6 +292,13 @@
       "product": "id:029DC18330996B0E0051A5EC",
       "product-type": "app-extension",
       "build-phases": [
+        {
+          "kind": "script",
+          "name": "Build Web Extension",
+          "shell": "/bin/sh",
+          "script": "\"${SRCROOT}/../build-web-extension.sh\"\n",
+          "run-on-every-build": true,
+        },
         "compile-sources",
         "frameworks",
         "resources",
@@ -300,11 +306,12 @@
       "build-settings": {
         "CODE_SIGN_STYLE": "Automatic",
         "CURRENT_PROJECT_VERSION": "1",
+        "ENABLE_USER_SCRIPT_SANDBOXING": "NO",
         "GENERATE_INFOPLIST_FILE": "YES",
         "INFOPLIST_FILE": "iOS (Extension)/Info.plist",
         "INFOPLIST_KEY_CFBundleDisplayName": "Not For Me Extension",
         "INFOPLIST_KEY_NSHumanReadableCopyright": "",
-        "IPHONEOS_DEPLOYMENT_TARGET": "15.0",
+        "IPHONEOS_DEPLOYMENT_TARGET": "17.0",
         "LD_RUNPATH_SEARCH_PATHS": [
           "$(inherited)",
           "@executable_path/Frameworks",
@@ -333,6 +340,13 @@
       "product": "id:029DC18D30996B0E0051A5EC",
       "product-type": "app-extension",
       "build-phases": [
+        {
+          "kind": "script",
+          "name": "Build Web Extension",
+          "shell": "/bin/sh",
+          "script": "\"${SRCROOT}/../build-web-extension.sh\"\n",
+          "run-on-every-build": true,
+        },
         "compile-sources",
         "frameworks",
         "resources",
@@ -342,7 +356,7 @@
         "CURRENT_PROJECT_VERSION": "1",
         "ENABLE_APP_SANDBOX": "YES",
         "ENABLE_HARDENED_RUNTIME": "YES",
-        "ENABLE_USER_SELECTED_FILES": "readonly",
+        "ENABLE_USER_SCRIPT_SANDBOXING": "NO",
         "GENERATE_INFOPLIST_FILE": "YES",
         "INFOPLIST_FILE": "macOS (Extension)/Info.plist",
         "INFOPLIST_KEY_CFBundleDisplayName": "Not For Me Extension",

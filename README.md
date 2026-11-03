@@ -40,13 +40,12 @@ A Chrome and Safari extension that automatically removes the "For you" tab from 
 
 ### Safari (macOS / iOS)
 
-The Xcode project in `safari/` wraps the build output in `dist/` as a Safari Web Extension.
+The Xcode project in `safari/` wraps the build output in `dist/` as a Safari Web Extension. Each extension target runs `safari/build-web-extension.sh`, which builds `dist/` with `bun`, so `bun` must be installed (`mise install` provides it).
 
-1. Build the extension (step 2 above) so that `dist/` exists
-2. Open `safari/Not For Me/Not For Me.xcodeproj` in Xcode
-3. Select your team under "Signing & Capabilities" for every target
-4. Run the `Not For Me (macOS)` or `Not For Me (iOS)` scheme
-5. Enable "Not For Me" in Safari's extension settings and allow it on x.com
+1. Open `safari/Not For Me/Not For Me.xcodeproj` in Xcode
+2. Select your team under "Signing & Capabilities" for every target
+3. Run the `Not For Me (macOS)` or `Not For Me (iOS)` scheme
+4. Enable "Not For Me" in Safari's extension settings and allow it on x.com
 
 ## Development
 

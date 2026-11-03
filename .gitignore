@@ -36,3 +36,6 @@ yarn-error.log*
 
 # Xcode
 xcuserdata/
+
+# CAFleet spawn prompts
+.prompts/

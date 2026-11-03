@@ -1,10 +1,3 @@
-//
-//  ViewController.swift
-//  Shared (App)
-//
-//  Created by himkt on 2026/11/03.
-//
-
 import WebKit
 
 #if os(iOS)
@@ -16,7 +9,7 @@ import SafariServices
 typealias PlatformViewController = NSViewController
 #endif
 
-let extensionBundleIdentifier = "com.himkt.NotForMe.Extension"
+let extensionBundleIdentifier = Bundle.main.bundleIdentifier! + ".Extension"
 
 class ViewController: PlatformViewController, WKNavigationDelegate, WKScriptMessageHandler {
 
@@ -43,12 +36,14 @@ class ViewController: PlatformViewController, WKNavigationDelegate, WKScriptMess
         webView.evaluateJavaScript("show('mac')")
 
         SFSafariExtensionManager.getStateOfSafariExtension(withIdentifier: extensionBundleIdentifier) { (state, error) in
-            guard let state = state, error == nil else {
-                // Insert code to inform the user that something went wrong.
-                return
-            }
-
             DispatchQueue.main.async {
+                if let error = error {
+                    self.presentError(error)
+                    return
+                }
+                guard let state = state else {
+                    preconditionFailure("getStateOfSafariExtension returned neither a state nor an error")
+                }
                 if #available(macOS 13, *) {
                     webView.evaluateJavaScript("show('mac', \(state.isEnabled), true)")
                 } else {
@@ -61,17 +56,16 @@ class ViewController: PlatformViewController, WKNavigationDelegate, WKScriptMess
 
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
 #if os(macOS)
-        if (message.body as! String != "open-preferences") {
-            return
+        guard let body = message.body as? String, body == "open-preferences" else {
+            preconditionFailure("Unexpected script message: \(message.body)")
         }
 
         SFSafariApplication.showPreferencesForExtension(withIdentifier: extensionBundleIdentifier) { error in
-            guard error == nil else {
-                // Insert code to inform the user that something went wrong.
-                return
-            }
-
             DispatchQueue.main.async {
+                if let error = error {
+                    self.presentError(error)
+                    return
+                }
                 NSApp.terminate(self)
             }
         }
