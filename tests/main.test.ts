@@ -71,11 +71,13 @@ describe('Not For Me Extension', () => {
       `;
 
       const element = document.querySelector<HTMLElement>('[data-testid="cellInnerDiv"]');
-      const spy = vi.spyOn(element!.style, 'display', 'set');
+      const observer = new MutationObserver(() => {});
+      observer.observe(element!, { attributes: true, attributeFilter: ['style'] });
 
       removeElementByTextContent(FORYOU);
 
-      expect(spy).not.toHaveBeenCalled();
+      expect(observer.takeRecords()).toHaveLength(0);
+      observer.disconnect();
     });
   });
 
