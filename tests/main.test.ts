@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import {
   FORYOU,
   WHATS_HAPPENING,
+  removeAds,
   removeElementByTextContent,
   removeElementByAriaLabel,
   removeForYouTab,
@@ -17,6 +18,30 @@ describe('Not For Me Extension', () => {
 
   afterEach(() => {
     vi.restoreAllMocks();
+  });
+
+  describe('removeAds', () => {
+    it('should hide tracked ad posts while keeping ordinary posts and tracking-only cells visible', () => {
+      document.body.innerHTML = `
+        <div data-testid="cellInnerDiv">
+          <div data-testid="placementTracking">
+            <div data-testid="placementTracking"></div>
+            <article data-testid="tweet"><button>Ad from example.com</button></article>
+          </div>
+        </div>
+        <div data-testid="cellInnerDiv">
+          <article data-testid="tweet"><span>ad</span></article>
+        </div>
+        <div data-testid="cellInnerDiv">
+          <div data-testid="placementTracking"></div>
+        </div>
+      `;
+
+      removeAds();
+
+      const cells = document.querySelectorAll<HTMLElement>('[data-testid="cellInnerDiv"]');
+      expect(Array.from(cells, (cell) => cell.style.display)).toEqual(['none', '', '']);
+    });
   });
 
   describe('removeElementByTextContent', () => {
@@ -175,6 +200,25 @@ describe('Not For Me Extension', () => {
   });
 
   describe('observeMutations', () => {
+    it('should hide ads inserted after observation starts', () => {
+      const observer = vi.spyOn(window, 'MutationObserver').mockImplementation(function () {
+        return { observe: vi.fn(), disconnect: vi.fn() } as unknown as MutationObserver;
+      });
+      observeMutations();
+
+      document.body.innerHTML = `
+        <div data-testid="cellInnerDiv">
+          <div data-testid="placementTracking">
+            <article data-testid="tweet"><button>Ad from example.com</button></article>
+          </div>
+        </div>
+      `;
+      const callback = observer.mock.calls[0][0];
+      callback([], observer.mock.instances[0]);
+
+      expect(document.querySelector<HTMLElement>('[data-testid="cellInnerDiv"]')!.style.display).toBe('none');
+    });
+
     it('should set up a MutationObserver on the document body', () => {
       const observeSpy = vi.fn();
       window.MutationObserver = vi.fn().mockImplementation(function () {

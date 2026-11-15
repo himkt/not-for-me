@@ -1,8 +1,19 @@
 export const FORYOU: string = 'for you';
 export const FOLLOWING: string = 'following';
-export const AD: string = 'ad';
 export const TRENDS_FOR_YOU: string = 'trends for you';
 export const WHATS_HAPPENING: string = 'Timeline: Trending now';
+
+export const removeAds = (): void => {
+  const tweets = document.querySelectorAll(
+    '[data-testid="placementTracking"] [data-testid="tweet"]'
+  ) as NodeListOf<HTMLElement>;
+  tweets.forEach((tweet) => {
+    const container = tweet.closest<HTMLElement>('[data-testid="cellInnerDiv"]');
+    if (container && container.style.display !== 'none') {
+      container.style.display = 'none';
+    }
+  });
+};
 
 export const removeElementByTextContent = (text: string): void => {
   const elements = Array.from(document.querySelectorAll('span') as NodeListOf<HTMLElement>).filter(
@@ -49,7 +60,7 @@ export const observeMutations = (): void => {
     const tabList = document.querySelectorAll('[role=tablist]') as NodeListOf<HTMLElement>;
     removeForYouTab(tabList[0] ?? null);
     removeElementByAriaLabel(WHATS_HAPPENING);
-    removeElementByTextContent(AD);
+    removeAds();
     removeElementByTextContent(TRENDS_FOR_YOU);
   });
 
